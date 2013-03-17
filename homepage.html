@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		{{ theme:partial name="metadata" }}
+		<script type="text/javascript">
+	
+		$(document).ready(function() {
+		  function filterPath(string) {
+		  return string
+		    .replace(/^\//,'')
+		    .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
+		    .replace(/\/$/,'');
+		  }
+		  var locationPath = filterPath(location.pathname);
+		  var scrollElem = scrollableElement('html', 'body');
+
+		  $('a[href*=#]').each(function() {
+		    var thisPath = filterPath(this.pathname) || locationPath;
+		    if (  locationPath == thisPath
+		    && (location.hostname == this.hostname || !this.hostname)
+		    && this.hash.replace(/#/,'') ) {
+		      var $target = $(this.hash), target = this.hash;
+		      if (target) {
+		        var targetOffset = $target.offset().top;
+		        $(this).click(function(event) {
+		          event.preventDefault();
+		          $(scrollElem).animate({scrollTop: targetOffset}, 600, function() {
+		            location.hash = target;
+		          });
+		        });
+		      }
+		    }
+		  });
+
+		  // use the first element that is "scrollable"
+		  function scrollableElement(els) {
+		    for (var i = 0, argLength = arguments.length; i <argLength; i++) {
+		      var el = arguments[i],
+		          $scrollElement = $(el);
+		      if ($scrollElement.scrollTop()> 0) {
+		        return el;
+		      } else {
+		        $scrollElement.scrollTop(1);
+		        var isScrollable = $scrollElement.scrollTop()> 0;
+		        $scrollElement.scrollTop(0);
+		        if (isScrollable) {
+		          return el;
+		        }
+		      }
+		    }
+		    return [];
+		  }
+
+		});
+
+		// Pop-up Message
+		$(document).ready(function(){
+			$('#scroll-to').fadeIn('slow');
+		 $(window).scroll(function(){
+		  var h = 100;
+		  var y = $(window).scrollTop();
+		  if( y > h ){
+		   $('#scroll-to').fadeOut('fast');
+		  }
+		 });
+		})
+		</script>
+	</head>
+	<body>
+	<a href="#yellow-section" id="scroll-to">See what shootround does!</a>
+		<!-- Start Container, 12 columns wide -->
+		<div id="container" class="container_12">
+			<!-- Header -->
+			<div id="header" class="grid_12">
+				{{ theme:partial name="header" }}
+				<div class="bg-shine"></div>
+			</div>
+			<!-- Content -->
+			<div id="content" class="grid_12 clearfix">
+				{{ template:body }}
+			</div>
+		</div>
+		<!-- End Container, 12 columns wide -->
+		<div id="yellow-section">
+			<div class="stitch-rule top"></div>
+				<div class="container_wide clearfix">
+					
+					<div class="grid_3">
+					<p class="number">1</p>
+					{{ widgets:instance id="19"}}
+					</div>
+
+					<div class="grid_3">
+					<p class="number">2</p>
+					{{ widgets:instance id="20"}}
+					</div>
+	
+					<div class="grid_3">
+					<p class="number">3</p>
+					{{ widgets:instance id="21"}}
+					</div>
+	
+					<div class="grid_3">
+					<p class="number">4</p>
+					{{ widgets:instance id="22"}}
+					</div>
+				
+				</div>
+			<div class="stitch-rule bottom"></div>
+		</div>
+		
+		<!-- How to -->
+		<div id="blue-section">
+			<div id="how-to" class="container_12 clearfix">
+
+				<div class="grid_6 center">
+					{{ widgets:instance id="14"}}
+				</div>
+
+				<div class="grid_6 center">
+					{{ widgets:instance id="15"}}
+				</div>
+				
+
+				<div class="grid_12 center logos">
+				<!-- More of Isaac's mad code additions -->	
+				<h2>Look who's been using shootround...</h2>
+				<!-- And that's quite enough of that -->
+					{{ theme:image file="company-logos/pmhf.jpg" alt="Video Temp" }}
+					{{ theme:image file="company-logos/fasken.jpg" alt="Video Temp" }}
+					{{ theme:image file="company-logos/books.jpg" alt="Video Temp" }}
+					{{ theme:image file="company-logos/FoxPress.jpg" alt="Video Temp" }}
+					{{ theme:image file="company-logos/HP.jpg" alt="Video Temp" }}
+					{{ theme:image file="company-logos/madison.jpg" alt="Video Temp" }}
+
+				</div>
+
+				<!-- Isaac addition for customer testimonial 17/03/13 -->
+				<div class="grid_12 center ">
+					<p id="italic">"Everyone loved having shootround on site. It was a lot of fun and innovative for us.  Great!"</p><h3>The Princess Margaret Cancer Foundation</h3>
+				</div>
+				<!-- Isaac addition over -->
+			</div>
+		</div>
+		
+		<!-- Footer -->
+		<div id="black-section">
+			<div id="footer" class="container_12 clearfix">
+					{{ theme:partial name="footer" }}
+			</div>
+		</div>
+
+	</body>
+</html>

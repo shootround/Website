@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		{{ theme:partial name="metadata" }}
+	</head>
+	<body>
+		<!-- Global container, 12 columns wide -->
+		<div id="container" class="container_12 clearfix">
+			<!-- Header -->
+			<div id="header" class="grid_12">
+				{{ theme:partial name="header" }}
+				<div class="bg-shine"></div>
+			</div>
+			<!-- Content -->
+			<div id="content" class="grid_12">
+				{{ template:body }}
+			</div>
+		</div>
+		
+		<!-- How to -->
+		<div class="stitch-rule blue"></div>
+		<div id="blue-section" class="no-shadow">
+			<div id="how-to" class="container_12 clearfix">
+
+				<div class="grid_6 center">
+					{{ widgets:instance id="14"}}
+				</div>
+
+				<div class="grid_6 center">
+					{{ widgets:instance id="15"}}
+				</div>
+
+				<div class="grid_12 center logos">
+					{{ theme:image file="company-logos/fasken.jpg" alt="Video Temp" }}
+					{{ theme:image file="company-logos/bjupress.jpg" alt="Video Temp" }}
+					{{ theme:image file="company-logos/books.jpg" alt="Video Temp" }}
+					{{ theme:image file="company-logos/FoxPress.jpg" alt="Video Temp" }}
+					{{ theme:image file="company-logos/HP.jpg" alt="Video Temp" }}
+					{{ theme:image file="company-logos/KT.jpg" alt="Video Temp" }}
+				</div>
+			</div>
+		</div>
+		
+		<!-- Footer -->
+		<div id="black-section">
+			<div id="footer" class="container_12 clearfix">
+				{{ theme:partial name="footer" }}
+			</div>
+		</div>
+	</body>
+</html>

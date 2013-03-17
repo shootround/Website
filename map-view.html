@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		{{ theme:partial name="metadata" }}
+		<script type="text/javascript"  src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCWXWMc3XV0iDLaBpgY6HCfPvhksfvlJHQ&sensor=false"></script>
+		<script type="text/javascript">
+		function initialize() {
+			var markers = [];
+			var locations = [
+			      ['The Slaughtered Lamb', 51.523307, -0.101144, 1],
+				  ['Princess Louise', 51.517401, -0.121596, 2]
+			    ];
+			var initialLocation;
+			var browserSupportFlag =  new Boolean();
+			var london = new google.maps.LatLng(51.523307, -0.101144);
+			var map = new google.maps.Map(document.getElementById('map_canvas'), {
+			     //center: new google.maps.LatLng(0, 0),
+			     // center: new google.maps.LatLng(51.523307, -0.101144),
+			      zoom: 8,
+			      panControl: false,
+   				 zoomControl: true,
+   				 scaleControl: true,
+			      mapTypeId: google.maps.MapTypeId.ROADMAP
+			    });
+			    
+			if(navigator.geolocation) {
+			    browserSupportFlag = true;
+			    navigator.geolocation.getCurrentPosition(function(position) {
+			      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+			      map.setCenter(initialLocation);
+			    }, function() {
+			      handleNoGeolocation(browserSupportFlag);
+			    });
+			  }
+			  // Browser doesn't support Geolocation
+			  else {
+			    browserSupportFlag = false;
+			    handleNoGeolocation(browserSupportFlag);
+			  }
+			  
+			  function handleNoGeolocation(errorFlag) {
+			    if (errorFlag == true) {
+			      alert("Geolocation service failed.");
+			      initialLocation = london;
+			    } else {
+			      alert("Your browser doesn't support geolocation. We've placed you in London.");
+			      initialLocation = london;
+			    }
+			    map.setCenter(initialLocation);
+			  }
+			  $.ajax({
+					url: "http://shootround.com/index.php/marker/getMarkers",
+					type: "get",
+										
+					success: function(response) {
+						locations=response.markers;
+						//console.log(locations);
+						createOverlays(locations);
+						
+					},
+					error:function(xhr, ajaxOptions, thrownError) {
+						if(xhr.status==403) {
+							var m = eval('('+xhr.responseText+')');
+							
+						}
+					}
+					
+				});
+				var infowindow = new google.maps.InfoWindow();
+
+			    var i;
+			
+				var image = '{{ variables:themebase }}/img/shootround-marker.png';
+				
+				function createOverlays(marks){
+					var marker;
+					for (i = 0; i < marks.length; i++) {  
+				      marker = new google.maps.Marker({
+				        position: new google.maps.LatLng(marks[i].lat, marks[i].lng),
+				        map: map,
+						icon: image
+				      });
+					markers.push(marker);
+				      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+				        return function() {
+				        var information='<p><strong>'+marks[i].name+'</strong><br /><h5>'+marks[i].address+'</h5><h5>'+marks[i].zipCode+'</h5><a href="http://shootround.com/index.php/marker/deleteMarker/'+marks[i].eventId+'"><input  class="deleteMarker" type="button" value="Delete"/></a><a href="http://shootround.com/index.php/marker/getMarker/'+marks[i].eventId+'" ><input type="button" class="editMarker" value="Edit" /></a></p>';
+				          infowindow.setContent(information);
+				          infowindow.open(map, marker);
+				        $('.deleteMarker').click(function(){
+					    	 $.ajax({
+								url: $(this).parent().attr('href'),
+								type: "get",
+								success: function(response) {
+									window.location.reload();
+								},
+								error:function(xhr, ajaxOptions, thrownError) {
+									if(xhr.status==403) {
+										var m = eval('('+xhr.responseText+')');
+									}
+								}
+									
+							});
+					    	return false;
+					    });
+					    $('.editMarker').click(function(){
+					    	$.ajax({
+								url: $(this).parent().attr('href'),
+								type: "get",
+								success: function(response) {
+									//window.location.reload();
+									console.log(response.eventId);
+									$('#eventId').val(response.eventId);
+									$('#name').val(response.name);
+									$('#houseName').val(response.houseName);
+									$('#address').val(response.address);
+									$('#zipCode').val(response.zipCode);
+									$('#lat').val(response.lat);
+									$('#lng').val(response.lng);
+									$(':radio[value='+response.venue+']').attr('checked',true);
+								},
+								error:function(xhr, ajaxOptions, thrownError) {
+									if(xhr.status==403) {
+										var m = eval('('+xhr.responseText+')');
+									}
+								}
+									
+							});
+					    	return false;
+					    });
+				        }
+				      })(marker, i));
+				     			     
+				    }
+				    
+				    
+			    }
+
+				//map.setCenter(new google.maps.LatLng(51.523307, -0.101144));
+			    /*
+var infowindow = new google.maps.InfoWindow();
+
+			    var marker, i;
+			
+				var image = '{{ variables:themebase }}/img/shootround-marker.png';
+
+			    for (i = 0; i < locations.length; i++) {  
+			      marker = new google.maps.Marker({
+			        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+			        map: map,
+					icon: image
+			      });
+
+			      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+			        return function() {
+			          infowindow.setContent(locations[i][0]);
+			          infowindow.open(map, marker);
+			        }
+			      })(marker, i));
+			    }
+*/
+			      
+			     google.maps.event.addListener(map, 'click', function(event) {
+				    placeMarker(event.latLng);
+				    var lat=document.getElementById('lat');
+				    var lng=document.getElementById('lng');
+				    
+				    lat.value=event.latLng.lat();
+				    lng.value=event.latLng.lng();
+				    
+				   // alert("Lat "+event.latLng.lat()+" , Long "+event.latLng.lng());
+				  }); 
+				  
+				function placeMarker(location) {
+				  var marker = new google.maps.Marker({
+				      position: location,
+				      map: map
+				  });
+				
+				 // map.setCenter(location);
+				}
+			}
+		    </script>
+	</head>
+	<body onload="initialize()">
+		<!-- Global container, 12 columns wide -->
+		<div id="container" class="container_12 clearfix">
+			<!-- Header -->
+			<div id="header" class="grid_12">
+				{{ theme:partial name="header" }}
+				<div class="bg-shine"></div>
+			</div>
+			<!-- Content -->
+			<div id="content" class="grid_12">
+				{{ template:body }}
+				<div id="map_canvas" style="width:100%; height:400px; color: #000; font-size: 22px;"></div>
+			</div>
+		</div>
+		
+		<!-- How to -->
+		<div class="stitch-rule blue"></div>
+		<div id="blue-section" class="no-shadow">
+			<div id="container" class="container_12 clearfix">
+				
+				<div class="grid_6 center">
+					<h2>Enter venues & Partners</h2>
+					
+					<form action="<?=base_url()?>index.php/marker/create" enctype="multipart/form-data" method="post" accept-charset="utf-8" id="marker_create">
+						<div class="radio-container">
+							<label for="venue"><input type="radio" name="venue" value="venue" id="venue"> Venues</label>
+						</div>
+						<div class="radio-container">
+							<label for="partner"> <input type="radio" name="venue" value="partner" id="partner"> Partners</label>
+						</div>
+						
+						<input type="hidden" name="lat" value="Latitude" id="lat" class="center" onfocus="this.value=''">
+						
+						<input type="hidden" name="lng" value="Longitude" id="lng" class="center" onfocus="this.value=''">										
+						<input type="hidden" name="eventId" value="-1" id="eventId" />
+						<p>
+							<input type="text" name="name" value="Venue/Partner Name" id="name" class="center" onfocus="this.value=''">
+						</p>
+						<p>
+							<input type="text" name="houseName" value="House Name/Number" id="houseName" class="center" onfocus="this.value=' ' ">
+						</p>
+						<p>
+							<input type="text" name="address" value="First Line of Address" id="address" class="center" onfocus="this.value=' ' ">
+						</p>
+						<p>
+							<input type="text" name="zipCode" value="Postcode/Zipcode" id="zipCode" class="center" onfocus="this.value=''">
+						</p>
+						<input type="submit" name="submit" class="submit" value="Enter">
+					</form>
+				</div>
+			</div>
+			
+		</div>
+		<!-- Footer -->
+		<div id="black-section">
+			<div id="footer" class="container_12 clearfix">
+				{{ theme:partial name="footer" }}
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		$('#marker_create').submit(function(){
+			if($('#lat').val()=='Latitude'){
+				alert("Please click on the map");
+				return false;
+			}else{
+				$.ajax({
+					url: this.action,
+					type: this.method,
+					data: $(this).serialize(),
+					
+					success: function(response) {
+						//console.log(response);
+						window.location.reload();
+					},
+					error:function(xhr, ajaxOptions, thrownError) {
+						if(xhr.status==403) {
+							var m = eval('('+xhr.responseText+')');
+							
+						}
+					}
+					
+				});
+				return false;
+			}
+		});
+	</script>
+</html>

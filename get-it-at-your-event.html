@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		{{ theme:partial name="metadata" }}
+		<script type="text/javascript"  src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCWXWMc3XV0iDLaBpgY6HCfPvhksfvlJHQ&sensor=false"></script>
+		<script type="text/javascript">
+		function initialize() {
+			var locations = [];
+			var markers = [];
+			var initialLocation;
+			var browserSupportFlag =  new Boolean();
+			var london = new google.maps.LatLng(51.523307, -0.101144);
+			    var map = new google.maps.Map(document.getElementById('map_canvas'), {
+			      zoom: 13,
+			      mapTypeId: google.maps.MapTypeId.ROADMAP
+			    });
+				if(navigator.geolocation) {
+			    browserSupportFlag = true;
+			    navigator.geolocation.getCurrentPosition(function(position) {
+			      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+			      map.setCenter(initialLocation);
+			    }, function() {
+			      handleNoGeolocation(browserSupportFlag);
+			    });
+			  }
+			  // Browser doesn't support Geolocation
+			  else {
+			    browserSupportFlag = false;
+			    handleNoGeolocation(browserSupportFlag);
+			  }
+			  
+			  function handleNoGeolocation(errorFlag) {
+			    if (errorFlag == true) {
+			      alert("Geolocation service failed.");
+			      initialLocation = london;
+			    } else {
+			      alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
+			      initialLocation = london;
+			    }
+			    map.setCenter(initialLocation);
+			  }
+
+			    var infowindow = new google.maps.InfoWindow();
+
+			    var i;
+			
+				var image = '{{ variables:themebase }}/img/shootround-marker.png';
+				
+		    	$.ajax({
+					url: "http://shootround.com/index.php/marker/getMarkers",
+					type: "get",
+										
+					success: function(response) {
+						locations=response.markers;
+						createOverlays(locations);
+						
+					},
+					error:function(xhr, ajaxOptions, thrownError) {
+						if(xhr.status==403) {
+							var m = eval('('+xhr.responseText+')');
+							
+						}
+					}
+					
+				});
+				function createOverlays(marks){
+					var venues='';
+					var partners='';
+					var marker;
+					for (i = 0; i < marks.length; i++) {  
+				      marker = new google.maps.Marker({
+				        position: new google.maps.LatLng(marks[i].lat, marks[i].lng),
+				        map: map,
+						icon: image
+				      });
+					markers.push(marker);
+				      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+				        return function() {
+				        var information='<p><strong>'+marks[i].name+'</strong><br /><h5>'+marks[i].address+'</h5><h5>'+marks[i].zipCode+'</h5></p>';
+				          infowindow.setContent(information);
+				          infowindow.open(map, marker);
+				        }
+				      })(marker, i));
+				      if(marks[i].venue=='venue'){
+				      	venues+='<a href=""><li>'+marks[i].name+', '+marks[i].address+', '+marks[i].zipCode+'</li></a>'+"\n";
+				      }else{
+				      	partners+='<a href=""><li>'+marks[i].name+', '+marks[i].address+', '+marks[i].zipCode+'</li></a>'+"\n";
+				      }
+				     
+				    }
+				    $('#venues-scroll').html(venues);
+				    $('#partners-scroll').html(partners);
+			    }
+			    $('#searchMap').submit(function(){
+		    		$.ajax({
+						url: this.action,
+						type: this.method,
+						data: $(this).serialize(),
+						
+						success: function(response) {
+							console.log(response);
+							deleteOverlays();
+							locations=response.markers;
+							createOverlays(locations);							
+						},
+						error:function(xhr, ajaxOptions, thrownError) {
+							if(xhr.status==403) {
+								var m = eval('('+xhr.responseText+')');
+								
+							}
+						}
+						
+					});
+					return false;
+			    });
+			    function deleteOverlays() {
+				  if (markers) {
+				    for (i in markers) {
+				      markers[i].setMap(null);
+				    }
+				    markers.length = 0;
+				  }
+				}
+			}
+		    </script>
+	</head>
+	<body onload="initialize()">
+		<!-- Global container, 12 columns wide -->
+		<div id="container" class="container_12 clearfix">
+			<!-- Header -->
+			<div id="header" class="grid_12" >
+				{{ theme:partial name="header" }}
+				<div class="bg-shine"></div>
+			</div>
+			<!-- Content -->
+			<div id="content" class="grid_12">
+				{{ template:body }}
+				<div id="map_canvas" style="width:100%; height:400px; color: #000; font-size: 22px;"></div>
+			</div>
+		</div>
+		
+		<div class="stitch-rule blue"></div>
+		<div id="blue-section" class="no-shadow">
+			<div id="container" class="container_12 clearfix">
+			
+				<div class="grid_6 center">
+					<h2>Find our Partners</h2>
+					<p>Speak to the partner closest to you to get shootround set up in any location of your choice.</p>
+					<form action="http://shootround.com/index.php/marker/getMarkers" enctype="multipart/form-data" method="post" accept-charset="utf-8" id="searchMap">
+
+						<!-- Isaac edit- removing the Venues and Partners radio box
+						<div class="radio-container">
+							<input type="radio" name="venue" value="venue"> Venues
+						</div>
+						
+						<div class="radio-container">
+							<input type="radio" name="venue" value="partner"> Partners
+						</div>
+						-->
+						<input type="text" name="zipCode" value="Postal Code" id="zipCode" class="center" onfocus="this.value=' ' ">
+						<input type="submit" name="submit" class="search" value="Search">
+					</form>
+				</div>
+				<div class="grid_6 center">
+					<!--- Commenting this to get rid of the Venues Box
+					<h2>The Venues</h2>
+					<p>These venues already have shootround installed</p>
+					<ul class="scroll-box" id="venues-scroll">
+						
+					</ul> -->
+					<h2 class="margin-top-20">The Partners</h2>
+					<p>Click on a location to see it on the map above</p>
+					<ul class="scroll-box" id="partners-scroll">
+						<a href=""><li>The Outstanding Events Company, England</li></a>
+						<a href=""><li>System 4 Productions,Toronto</li></a>
+						<a href=""><li>Shootround Inc, Toronto</li></a>
+						<a href=""><li>Urban Groove Productions, Toronto</li></a>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Footer -->
+		<div id="black-section">
+			<div id="footer" class="container_12 clearfix">
+				{{ theme:partial name="footer" }}
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		{{ theme:partial name="metadata" }}
+	</head>
+	<body>
+		<!-- Global container, 12 columns wide -->
+		<div id="container" class="container_12 clearfix">
+			<!-- Header -->
+			<div id="header" class="grid_12">
+				{{ theme:partial name="header" }}
+				<div class="bg-shine"></div>
+			</div>
+			<!-- Content -->
+			<div id="content" class="grid_12">
+				{{ template:body }}
+			</div>
+		</div>
+		
+		<!-- How to -->
+		<div class="stitch-rule blue"></div>
+		<div id="blue-section" class="no-shadow">
+			<div id="help-answers" class="container_12 clearfix">
+				{{ widgets:instance id="6"}}
+			</div>
+		</div>
+		
+		<!-- Footer -->
+		<div id="black-section">
+			<div id="footer" class="container_12 clearfix">
+				{{ theme:partial name="footer" }}
+			</div>
+		</div>
+		<script type="text/javascript">
+		$(document).ready(function() {
+		  function filterPath(string) {
+		  return string
+		    .replace(/^\//,'')
+		    .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
+		    .replace(/\/$/,'');
+		  }
+		  var locationPath = filterPath(location.pathname);
+		  var scrollElem = scrollableElement('html', 'body');
+
+		  $('a[href*=#]').each(function() {
+		    var thisPath = filterPath(this.pathname) || locationPath;
+		    if (  locationPath == thisPath
+		    && (location.hostname == this.hostname || !this.hostname)
+		    && this.hash.replace(/#/,'') ) {
+		      var $target = $(this.hash), target = this.hash;
+		      if (target) {
+		        var targetOffset = $target.offset().top;
+		        $(this).click(function(event) {
+		          event.preventDefault();
+		          $(scrollElem).animate({scrollTop: targetOffset}, 200, function() {
+		            location.hash = target;
+		          });
+		        });
+		      }
+		    }
+		  });
+
+		  // use the first element that is "scrollable"
+		  function scrollableElement(els) {
+		    for (var i = 0, argLength = arguments.length; i <argLength; i++) {
+		      var el = arguments[i],
+		          $scrollElement = $(el);
+		      if ($scrollElement.scrollTop()> 0) {
+		        return el;
+		      } else {
+		        $scrollElement.scrollTop(1);
+		        var isScrollable = $scrollElement.scrollTop()> 0;
+		        $scrollElement.scrollTop(0);
+		        if (isScrollable) {
+		          return el;
+		        }
+		      }
+		    }
+		    return [];
+		  }
+
+		});
+		</script>
+	</body>
+</html>
