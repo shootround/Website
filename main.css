@@ -511,8 +511,9 @@ p.grey-text.header
 {
 	background:		url(../img/string-border-blue.jpg) repeat-x 0 0;
 }
+/** changed margin bottom from 50px to 10px **/
 .stitch-rule.top
-{   margin-bottom:	50px; }
+{   margin-bottom:	10px; }
 
 /** changed margin top from 50px to 10px **/
 .stitch-rule.bottom
