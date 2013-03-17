@@ -480,12 +480,13 @@ p.grey-text.header
 		-moz-text-shadow:		1px 1px 1px #b07b2f;
 		-o-text-shadow:			1px 1px 1px #b07b2f;
 	}
-		/* Isaac edit 12th March 2013. Originally width=84. padding=30 */
+		/* Isaac edit 12th March 2013. Originally width=84. padding=30 
+		edit 17th March. changed height from 89px */
 
 		#yellow-section p.number
 		{
 			width:			92px;
-			height:			89px;
+			height:			69px;
 			font-size:		50px;
 			background:		url(../img/bg-numbercircle.png) no-repeat 0 0;
 			padding:		27px 0 0 0;
