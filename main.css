@@ -486,7 +486,7 @@ p.grey-text.header
 		#yellow-section p.number
 		{
 			width:			92px;
-			height:			69px;
+			height:			89px;
 			font-size:		50px;
 			background:		url(../img/bg-numbercircle.png) no-repeat 0 0;
 			padding:		27px 0 0 0;
@@ -514,8 +514,9 @@ p.grey-text.header
 .stitch-rule.top
 {   margin-bottom:	50px; }
 
+/** changed margin top from 50px to 10px **/
 .stitch-rule.bottom
-{   margin-top:		50px; 
+{   margin-top:		10px; 
 	box-shadow:		0px 2px 3px #999;
 }
 #blue-section, #black-section
