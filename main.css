@@ -424,6 +424,7 @@ p.grey-text.header
 	margin:			20px 0 40px 0;
 	min-height:		400px;
 }
+/** changed margin top from 820 to 1820**/
 #yellow-section
 {
 	background:		url(../img/bg-yellow.jpg) repeat 0 0;
@@ -431,7 +432,7 @@ p.grey-text.header
     left:			0;
     right:			0;
 	text-align:		center;
-	margin-top:		820px;
+	margin-top:		1820px;
 }
 	#yellow-section .grid_3,
 	#yellow-section .grid_4
