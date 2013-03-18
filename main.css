@@ -65,6 +65,11 @@ h1, h2, h3, h4, h5, h6
 	font-style: italic;
 	font-size: 25px;
 }
+
+#h7
+{
+	font-size: 		42px;
+}
 /** Isaac addition over **/
 h1 {font-size:		35px; }
 
@@ -418,13 +423,28 @@ p.grey-text.header
 					Sections
 
 *******************************************************/
+/** Isaac's experimental blue section 
+#blue2
+{
+	background:			#344567;
+	position:			absolute;
+	width:				2000px;
+}
+#blue2text
+{
+	position: 			center;
+	height:				150px;
+	width:				900px;
+	text-align:  		center;	
+	margin-left: 		200px;
 
+ Ends here **/
 #content
 {
 	margin:			20px 0 40px 0;
 	min-height:		400px;
 }
-/** vary margin-top to leave more space below the picture and before the yellow section**/
+/** vary margin-top to leave more space below the picture and before the yellow section orig-820**/
 #yellow-section
 {
 	background:		url(../img/bg-yellow.jpg) repeat 0 0;
